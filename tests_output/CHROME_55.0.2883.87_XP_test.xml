@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="8">
+
+  <testsuite name="test"
+    errors="0" failures="0" hostname="" id="" package="test" skipped="0"
+    tests="8" time="4.641" timestamp="Fri, 06 Jan 2017 09:06:13 GMT">
+  
+    <testcase name="ROOT: elements present on page" time="2.675" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="MAIN COMPONENT: elements present on page" time="0.3310" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="MAIN COMPONENT: name contains &quot;letters&quot; display on page" time="0.2420" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="MAIN COMPONENT: if name contains &quot;numbers&quot; - display error text" time="0.1850" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="MAIN COMPONENT: number changed on click" time="0.2620" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="ENTRY DATA COMPONENT: elements present on page" time="0.1390" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="ENTRY DATA COMPONENT: new name display on main page" time="0.4640" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="Routing: &quot;back&quot; button in browser display previous page" time="0.3430" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+  
+  </testsuite>
+</testsuites>
