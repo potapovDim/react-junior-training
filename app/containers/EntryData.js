@@ -28,6 +28,10 @@ class EnterDataComponent extends Component {
             <button onClick={this.initData} type='button'>Exit to main
             </button>
           </Link>
+           <Link to="/dnd">
+            <button onClick={this.initData} type='button'>Go to dnd
+            </button>
+          </Link>
 
         </div>
       </div>

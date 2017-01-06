@@ -2,31 +2,29 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router'
 
-class PropSCLass extends Component{
+class PropSCLass extends Component {
 
-  render(){
+  render() {
     const propTitle = this.props.propTitle
     return (
-    <div>
+      <div>
         nust return prop
         <div>{propTitle}</div>
-    </div>
+      </div>
     )
   }
 }
 
-
-
 class Main extends Component {
   state = {
-    greeting : 'hello', 
+    greeting: 'hello',
     count: 1
   }
 
   changeGreeting = event => {
-    /[a-z]/.test(event.target.value) ? this.setState({
-      greeting:event.target.value
-    }) : this.setState({greeting: 'sorry , bad data'})
+    /[a-z]/.test(event.target.value)
+      ? this.setState({greeting: event.target.value})
+      : this.setState({greeting: 'sorry , bad data'})
   }
 
   render() {
@@ -34,25 +32,32 @@ class Main extends Component {
     return (
       <div>
         <h1>MAIN COMPONENT</h1>
-          <div style={{height:'100%'}}>
-          <h1>{name === '' ? 'U dont enter your name' : `Hello ${name}`}</h1>
+        <div style={{height: '100%'}}>
+          <h1>{name === ''? 'U dont enter your name': `Hello ${name}`}</h1>
           <div>
             In this input u can enter just letters
-            <input onChange = {this.changeGreeting}/>
+            <input onChange={this.changeGreeting}/>
           </div>
-            <button onClick ={()=>this.setState({count:this.state.count+1})}> click me</button>
+          <button
+            onClick
+            ={() => this.setState({
+            count: this.state.count + 1
+          })}>
+            click me</button>
           <h1>{this.state.count}</h1>
-        {this.state.greeting}
-            <div style={{weight:"80%"}}>
-              {this.props.children}
-            </div>
-            <PropSCLass propTitle={`Test Title ${this.state.count}`} />
+          {this.state.greeting}
+          <div style={{
+            weight: "80%"
+          }}>
+            {this.props.children}
+          </div>
+          <PropSCLass propTitle={`Test Title ${this.state.count}`}/>
 
           <Link to="/entries">
-            <button onClick={this.initData}
-              type='button'>Go to enter name component </button>
+            <button onClick={this.initData} type='button'>Go to enter name component
+            </button>
           </Link>
-          </div>
+        </div>
       </div>
     )
   }
