@@ -1,139 +1,145 @@
 
 module.exports = {
-  
-  'should have  button' : function (browser) {
+
+  'should have button with name "go to main"': function (browser) {
     browser
       .url('http://localhost:9090/')
-     /* .getText("button:first-child", function(result) {
-        this.assert.notEqual(result.value, undefined);
-        this.assert.notEqual(result.value, "");   
-        this.assert.notEqual(result.value, null);   
-      })*/
-      .assert.elementPresent("button:first-child")
-      .end();
-  }, 
+      .waitForElementVisible('button', 1000)
+    browser.expect.element("button").text.to.equal("Go to main")
+    browser.end();
+  },
 
-  'should redirect to main page ' : function (browser) {
+  'should redirect to main page with header Main Component and input ': function (browser) {
     browser
       .url('http://localhost:9090/')
       .click("button")
-      .assert.urlEquals('http://localhost:9090/main')
-      .end();
-  }, 
+      .assert.urlEquals('http://localhost:9090/main').
+      expect.element("h1").text.to.equal("MAIN COMPONENT")
+    browser.assert.elementPresent("input")
+    browser.end();
+  },
 
-  'main page should have field input and buttons' : function (browser) {   
-    browser
-      .url('http://localhost:9090/main')
-      
-      .assert.elementPresent("input")
-      
-      //.assert.containsText("button", "click me")
-      .getText("button", function(result) {
-        this.assert.notEqual(result.value, undefined);
-        this.assert.notEqual(result.value, "");   
-      })
-
-     .getText("a[href^='/entries']>button", function(result) {
-        this.assert.notEqual(result.value, undefined);
-        this.assert.notEqual(result.value, "");   
-      })
-
-      .getText("a[href^='/main']>button", function(result) {
-        this.assert.notEqual(result.value, undefined);
-        this.assert.notEqual(result.value, "");   
-      })
-      .end();
-}, 
-
-  'entries page should have field input and buttons' : function (browser) {   
+  'go to main work from entries': function (browser) {
     browser
       .url('http://localhost:9090/entries')
-      
-      .assert.elementPresent("input") 
-      .assert.elementPresent("a[href^='/main']>button")   //Exit to main
-      .assert.elementPresent("a[href^='/dnd']>button")   //Go to dnd
-      .assert.elementPresent("#app > div > a > button")    //Go to main
+      .click("a[href^='/main']")
+      .assert.urlEquals("http://localhost:9090/main")
+  },
 
-      .end();
-}, 
-
-  'should enter name' : function (browser) {
+  'changing Input check': function (browser) {
     browser
       .url('http://localhost:9090/main')
-      .click("a[href^='/entries']>button")
+
+      .assert.elementPresent("input")
+      .assert.containsText("#app", "hello")
+      .setValue("input", "HELLO its me dsadsa")
+      .assert.containsText("#app", "HELLO its me dsadsa")
+      .end();
+  },
+
+   'changing Input with text+symbols': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+      .setValue("input","test#$%")
+      .assert.containsText("#app","sorry , bad data")
+      .end()
+   },
+
+  'changing Input with text+numbers': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+      .setValue("input","test#$%")
+      .assert.containsText("#app","sorry , bad data")
+      .end()
+   },
+
+'changing Input with numbers': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+
+      .setValue("input", "123")
+      .assert.containsText("#app", "sorry , bad data")
+      .end()
+
+},
+
+'changing Input with only special numbers': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+      .setValue("input", "!@#$%")
+      .assert.containsText("#app", "sorry , bad data")
+      .end();
+  },
+
+  'click me button counter check ': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+      .assert.containsText('div button', "click me")
+    for (i = 0; i < 10; ++i) {
+      browser.click('div button')
+        .assert.containsText("button + h1", (i + 2).toString())
+        .assert.containsText("div + div > div", "Test Title " + (i + 2).toString())
+    }
+    browser.end();
+  },
+
+  'should enter name': function (browser) {
+    browser
+      .url('http://localhost:9090/main')
+      .click("a button")
       .assert.urlEquals('http://localhost:9090/entries')
-      
-      .setValue('input', 'Qwe')
+      .setValue('input', 'some name')
       .click("button:first-child")
       .assert.urlEquals('http://localhost:9090/main')
-      .assert.containsText("h1 + div > h1", "Qwe")
-
+      .assert.containsText("h1 + div > h1", "Hello some name")
       .end();
-  
-  }, 
+  },
 
-  'should input some letters in text-field and view in the page' : function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue('input', 'nightwatch')
-      .assert.containsText("#app", "nightwatch")
-      .end();
-  }, 
-
-  'should input some letters vs number in text-field and view in the page' : function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue('input', '123nightwatch')
-      .assert.containsText("#app", "123nightwatch")
-      .end();
-  }, 
-
-  'should view an error if input a number only' : function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue('input', '123')
-      .assert.containsText("#app", "sorry , bad data")
-      .end();
-  }, 
-  
-  'should view an error if input have insignificant characters only' : function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue('input', '@#$')
-      .assert.containsText("#app", "sorry , bad data")
-      .end();
-  }, 
-
-
-  'should view click count' : function (browser) {    
-    browser
-      .url('http://localhost:9090/main')
-      .click("button")   
-      .click("button")  
-      .pause(1000)
-      
-      .assert.containsText("button + h1", "3")
-      .assert.containsText("div + div > div", "3")
-      .end();
-  }, 
-
- 
-  'should go to dnd module' : function (browser) {    
+  'should go to dnd module': function (browser) {
     browser
       .url('http://localhost:9090/entries')
-      .click("a[href^='/dnd']>button")   
+      .click("a[href^='/dnd']")
       .assert.urlEquals('http://localhost:9090/dnd')
       .end();
-}, 
+  },
 
-
-    'dnd should have  obj A & obj B' : function (browser) {    
+  'dnd should have  obj A & obj B': function (browser) {
     browser
       .url('http://localhost:9090/dnd')
-      browser.elements('css selector' , '.drag-box' ,(result) => {
-        browser.assert.equal(result.value.length, 2); 
-      })     
+    browser.elements('css selector', '.drag-box', (result) => {
+      browser.assert.equal(result.value.length, 2);
+    })
       .end();
-  }, 
+  },
+
+  'dnd remove elements': function (browser) {
+    browser
+      .url('http://localhost:9090/dnd')
+      .click(".box-button")
+    browser.elements('css selector', '.drag-box', (result) => {
+      browser.assert.equal(result.value.length, 1);
+    })
+      .end();
+  },
+  'dnd add elements': function (browser) {
+    browser
+      .url('http://localhost:9090/dnd')
+      .click(".option-menu > div:nth-child(2)")
+    browser.elements('css selector', '.drag-box', (result) => {
+      browser.assert.equal(result.value.length, 3);
+    })
+      .end();
+  },
+  // 'dnd element' : function (browser) {    
+  //   browser
+  //     .url('http://localhost:9090/dnd')
+  //     .moveToElement('a[href = "/main"]', 0,  0)
+  //     .pause(1000)
+  //     .mouseButtonDown(0)
+  //     .moveToElement('#app',  30,  0)
+  //     .mouseButtonUp(0)
+  //     .pause(5000)
+  //     .end();
+  // }, 
 
 };
