@@ -1,145 +1,87 @@
-
 module.exports = {
-
-  'should have button with name "go to main"': function (browser) {
-    browser
-      .url('http://localhost:9090/')
-      .waitForElementVisible('button', 1000)
-    browser.expect.element("button").text.to.equal("Go to main")
-    browser.end();
+  'should have button with name "go to main"': function (client) {
+    var start = client.page.start();
+    start.navigate()
+      .assert.containsText('@app', "ROOT")
+      .assert.containsText('@goToMainButton', "Go to main")
+    client.end();
   },
 
-  'should redirect to main page with header Main Component and input ': function (browser) {
-    browser
-      .url('http://localhost:9090/')
-      .click("button")
-      .assert.urlEquals('http://localhost:9090/main').
-      expect.element("h1").text.to.equal("MAIN COMPONENT")
-    browser.assert.elementPresent("input")
-    browser.end();
-  },
+  'should redirect to main page with header Main Component and input ': function (client) {
 
-  'go to main work from entries': function (browser) {
-    browser
-      .url('http://localhost:9090/entries')
-      .click("a[href^='/main']")
-      .assert.urlEquals("http://localhost:9090/main")
-  },
-
-  'changing Input check': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-
-      .assert.elementPresent("input")
-      .assert.containsText("#app", "hello")
-      .setValue("input", "HELLO its me dsadsa")
-      .assert.containsText("#app", "HELLO its me dsadsa")
-      .end();
-  },
-
-   'changing Input with text+symbols': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue("input","test#$%")
-      .assert.containsText("#app","sorry , bad data")
-      .end()
-   },
-
-  'changing Input with text+numbers': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue("input","test#$%")
-      .assert.containsText("#app","sorry , bad data")
-      .end()
-   },
-
-'changing Input with numbers': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-
-      .setValue("input", "123")
-      .assert.containsText("#app", "sorry , bad data")
-      .end()
-
-},
-
-'changing Input with only special numbers': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .setValue("input", "!@#$%")
-      .assert.containsText("#app", "sorry , bad data")
-      .end();
-  },
-
-  'click me button counter check ': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .assert.containsText('div button', "click me")
-    for (i = 0; i < 10; ++i) {
-      browser.click('div button')
-        .assert.containsText("button + h1", (i + 2).toString())
-        .assert.containsText("div + div > div", "Test Title " + (i + 2).toString())
-    }
-    browser.end();
-  },
-
-  'should enter name': function (browser) {
-    browser
-      .url('http://localhost:9090/main')
-      .click("a button")
-      .assert.urlEquals('http://localhost:9090/entries')
-      .setValue('input', 'some name')
-      .click("button:first-child")
+    var start = client.page.start();
+    var main = client.page.main();
+    start.navigate()
+      .click("@goToMainButton")
       .assert.urlEquals('http://localhost:9090/main')
-      .assert.containsText("h1 + div > h1", "Hello some name")
-      .end();
+      .assert.elementPresent("@goToMainButton")
+      
+    main.assert.containsText("@mainHeader", "MAIN COMPONENT")
+    client.end();
   },
 
-  'should go to dnd module': function (browser) {
-    browser
-      .url('http://localhost:9090/entries')
-      .click("a[href^='/dnd']")
-      .assert.urlEquals('http://localhost:9090/dnd')
-      .end();
+
+  'go to main work from entries': function (client) {
+    var entries = client.page.entries();
+
+    entries.navigate()
+      .click("@goToMainButton")
+      .assert.urlEquals("http://localhost:9090/main")
+    client.end();
   },
 
-  'dnd should have  obj A & obj B': function (browser) {
-    browser
-      .url('http://localhost:9090/dnd')
-    browser.elements('css selector', '.drag-box', (result) => {
-      browser.assert.equal(result.value.length, 2);
+  'changing Input check': function (client) {
+
+    var main = client.page.main();
+    main.navigate()
+      .assert.elementPresent("@input")
+      .assert.containsText("@app", "hello")
+      .checkInput("HELLO its me dsadsa", "HELLO its me dsadsa")
+      .checkInput('test#$%', "sorry , bad data")
+      //.checkInput('test1234',"sorry , bad data")
+      .checkInput('123', "sorry , bad data")
+      .checkInput('#@%$', "sorry , bad data")
+    client.end();
+  },
+
+  'click me button counter check ': function (client) {
+    var main = client.page.main();
+    main.navigate()
+      .assert.containsText('@clickMeButton', "click me")
+    for (i = 0; i < 10; ++i) {
+      main.isButtonAddValueToCounter(i);
+    }
+    client.end();
+  },
+
+  'should enter name': function (client) {
+    var main = client.page.main();
+    var entries = client.page.entries();
+    main.navigate()
+      .click("@goToEntries")
+      .assert.urlEquals('http://localhost:9090/entries')
+
+    entries.setValue('@input', 'some name')
+      .click("@goToMainButton")
+      .assert.urlEquals('http://localhost:9090/main')
+
+    main.assert.containsText("@helloTitle", "Hello some name")
+    client.end();
+  },
+
+
+  'dnd should have  obj A & obj B': function (client) {
+    var dnd = client.page.dnd();
+    dnd.navigate()
+
+    client.elements('css selector', '.drag-box', (result) => {
+      client.assert.equal(result.value.length, 2);
     })
-      .end();
-  },
-
-  'dnd remove elements': function (browser) {
-    browser
-      .url('http://localhost:9090/dnd')
-      .click(".box-button")
-    browser.elements('css selector', '.drag-box', (result) => {
-      browser.assert.equal(result.value.length, 1);
+    dnd.addSomeObject()
+    client.elements('css selector', '.drag-box', (result) => {
+      client.assert.equal(result.value.length, 3);
     })
-      .end();
-  },
-  'dnd add elements': function (browser) {
-    browser
-      .url('http://localhost:9090/dnd')
-      .click(".option-menu > div:nth-child(2)")
-    browser.elements('css selector', '.drag-box', (result) => {
-      browser.assert.equal(result.value.length, 3);
-    })
-      .end();
-  },
-  // 'dnd element' : function (browser) {    
-  //   browser
-  //     .url('http://localhost:9090/dnd')
-  //     .moveToElement('a[href = "/main"]', 0,  0)
-  //     .pause(1000)
-  //     .mouseButtonDown(0)
-  //     .moveToElement('#app',  30,  0)
-  //     .mouseButtonUp(0)
-  //     .pause(5000)
-  //     .end();
-  // }, 
-
+    dnd.removeSomeObject()
+    client.end()
+  }
 };
