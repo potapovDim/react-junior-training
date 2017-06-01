@@ -1,9 +1,9 @@
 {
-  "src_folders" : ["nightwatch-test/tests/"],
+  "src_folders" : ["nightwatch-test/tests"],
   "output_folder" : "",
   "custom_commands_path" : "",
   "custom_assertions_path" : "",
-  "page_objects_path" : "",
+  "page_objects_path" : "nightwatch-test/pages/",
   "globals_path" : "",
 
   "selenium" : {
@@ -32,9 +32,10 @@
         "browserName": "chrome",
         "marionette": true
       },
+    "abortOnAssertionFailure": false,
     "skip_testcases_on_fail": false,
-    "end_session_on_fail": false,
-    "abortOnAssertionFailure": false
+    "end_session_on_fail": false
+    
     },
     "chrome" : {
       "desiredCapabilities": {
